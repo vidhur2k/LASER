@@ -2,12 +2,19 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, request, jsonify
 import os
+import sys
 import socket
 import tempfile
 from pathlib import Path
 import numpy as np
-from LASER.source.lib.text_processing import Token, BPEfastApply
-from LASER.source.embed import *
+# get environment
+assert os.environ.get('LASER'), 'Please set the enviornment variable LASER'
+LASER = os.environ['LASER']
+sys.path.append(LASER + '/source')
+sys.path.append(LASER + '/source/lib')
+
+from text_processing import Token, BPEfastApply
+from embed import *
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -29,9 +36,9 @@ def vectorize():
     if lang is None or not lang:
         lang = "en"
     # encoder
-    model_dir = Path(__file__).parent / "LASER" / "models"
-    encoder_path = model_dir / "bilstm.93langs.2018-12-26.pt"
-    bpe_codes_path = model_dir / "93langs.fcodes"
+    model_dir = os.path.join(LASER, "models")
+    encoder_path = os.path.join(model_dir,  "bilstm.93langs.2018-12-26.pt")
+    bpe_codes_path = os.path.join(model_dir, "93langs.fcodes")
     print(f' - Encoder: loading {encoder_path}')
     encoder = SentenceEncoder(encoder_path,
                               max_sentences=None,

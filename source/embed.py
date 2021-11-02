@@ -387,3 +387,9 @@ if __name__ == '__main__':
                    args.output,
                    verbose=args.verbose, over_write=False,
                    buffer_size=args.buffer_size)
+        dim = 1024
+        X = np.fromfile(args.output, dtype=np.float32, count=-1)
+        X.resize(X.shape[0] // dim, dim)
+        embedding = X
+    body = {'content': content, 'embedding': embedding.tolist()}
+    print(embedd)
